@@ -1,0 +1,9 @@
+__pycache__
+data
+report/*
+
+# except
+!report/three_wave_interaction.pdf
+!report/three_wave_interaction.tex
+!report/references.bib
+!report/img
