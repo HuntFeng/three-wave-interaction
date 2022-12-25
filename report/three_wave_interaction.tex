@@ -62,7 +62,15 @@
     \begin{equation}
         E_{\parallel} = \frac{mc\omega_p}{e} \Re \{ \phi_2\exp(i\Phi_{PM}) \}
     \end{equation}
-    where the ponderomotive phas, $\Phi_{PM}=\Phi_0-\Phi_1$, has a shorter wavelength and lower frequency than the electromagnetic waves. The exact matching conditions for RBS are $k_p=k_0+k_1$ and $\omega_0-\omega_1=\omega_p$ where $k_p$ is the wave number of the longitudinal wave.
+    where the ponderomotive phas, $\Phi_{PM}=\Phi_0-\Phi_1$, has a shorter wavelength and lower frequency than the electromagnetic waves. The exact matching conditions for RBS are
+    \begin{equation} \label{eq:resonance_conditions}
+        \begin{aligned}
+            k_p &= k_0+k_1 \\
+            \omega_p * = \omega_0-\omega_1
+        \end{aligned}
+    \end{equation}
+    This is the resonance conditions for three-wave interaction,
+    where $k_p$ is the wave number of the longitudinal wave.
     The equation for the longitudinal field is obtained from Eq.(\ref{eq:eq9}). When we consider only the terms having the ponderomotive phase $\exp(i\Phi_{PM})$ in order to treat the coupling with the longitudinal field,
     \begin{equation}
         \mathbf{A}\cdot\pdv{\mathbf{A}}{x} = -\Re\left\{ \frac{i}{2}\left(\frac{mc}{2}\right)^2 k_p\phi_1^*\phi_0\exp(i\Phi_{PM}) \right\}
@@ -93,12 +101,12 @@
         \end{aligned}
     \end{equation}
     where 
-    \begin{equation}
+    \begin{equation} \label{eq:coupling_coefficients}
         \beta_0=\beta_2\frac{\omega_p}{\omega_0}, \quad
         \beta_1=\beta_2\frac{\omega_p}{\omega_1}, \quad
         \beta_2=\frac{c}{4}k_p
     \end{equation}
-    Here, $\phi_0 = eE_0/mc\omega_0$ and $\phi_1=eE_1/mc\omega-1$ are the normalized electric fields for the pump and the seed pulses, respectively, and $\phi_2=eE_{\parallel}/mc\omega_p$ is the normalized longitudinal electric field. The seed ($j=1$) and the pump ($j=0$) laser satisfy the dispersio relation of an electromagnetic wave in a plasma:
+    Here, $\phi_0 = eE_0/mc\omega_0$ and $\phi_1=eE_1/mc\omega_1$ are the normalized electric fields for the pump and the seed pulses, respectively, and $\phi_2=eE_{\parallel}/mc\omega_p$ is the normalized longitudinal electric field. The seed ($j=1$) and the pump ($j=0$) laser satisfy the dispersio relation of an electromagnetic wave in a plasma:
     \begin{equation}
         \omega_j^2 = \omega_p^2 + c^2k_j^2
     \end{equation}
@@ -176,20 +184,70 @@
         \end{aligned}
     \end{equation}
 
-    \section{Result}
+    \newpage
+    \begin{table} 
+        \centering
+        \caption{The first three entries are the frequencies of pump wave, $\omega_0$, seed wave, $\omega_1$, and electron plasma frequency, $\omega_0$. The last three entries are the initial amplitudes of pump wave, $\phi_0$, seed wave $\phi_1$ and plasma, $\phi_2$. }
+        \begin{tabular}{|c|c|c||c|c|c|}
+            \hline
+            $\omega_0$ & $\omega_1$ & $\omega_p$ & $\phi_p$ & $\phi_s$ & $\phi_{pl}$  \\
+            \hline
+            1.885PHz & 1.6965PHz & 188.5THz & 0.05 & 0.1 & 0.01  \\
+            \hline
+        \end{tabular}
+        \label{table:parameters}
+    \end{table}
+
+    \begin{table} 
+        \centering
+        \caption{The grid resolution is set to be $\Delta x=0.2\mu$m and the time step is $\Delta t = 0.9\Delta x/v_{g,0}$ and the two boundaries are fixed. Meaning the values of the boundaries are unchanged. The system length is set to be $L=$2mm, so that we can minimize the boundary effect on the result. }
+        \begin{tabular}{|c|c|c||c|}
+            \hline
+            $L$ & $\Delta x$ & $\Delta t v_{g,0}/\Delta x$ & B.C.  \\
+            \hline
+            2mm & $0.2\mu$m & $0.9$ & Fixed  \\
+            \hline
+        \end{tabular}
+        \label{table:simulation_parameters}
+    \end{table}
+
+    \section{Numerical Experiment}
+    The plasma frequencies and initial wave amplitudes are taken from \cite{kim_machine_2019} and summarized in Table.\ref{table:parameters}. 
+
+    The coupling coefficients $\beta_j (j=0,1,2)$ can be obtained using Eq.(\ref{eq:coupling_coefficients}). Moreover, plasma frequency, $\omega_2$, and the wavenumber of electron plasma wave, $k_p$, can be determined from the resonance conditions Eq.(\ref{eq:resonance_conditions}) for the three-wave interaction. 
+    
+    Knowing wavenumbers for pump and seed waves, $k_j (j=0,1)$, we can determine their group velocities $v_{g,j} = k_jc^2/\omega_j (j=0,1)$. For simplicity, a cold plasma is assumed, $v_{g,2}=0$.
+
+    Now, the initial conditions are known given the above parameters.
+    \begin{equation}
+        \begin{aligned}
+            \phi_0(x,0) &= \phi_p H((x-x_0) - (v_0+v_1)t_r) \\
+            \phi_1(x,0) &= \phi_s \exp(-\frac{(x-x_0)^2}{(ct_s)^2}) \\
+            \phi_2(x,0) &= \phi_{pl} 
+        \end{aligned}
+    \end{equation}
+    where $H(x)$ is the Heaviside function
+    \[ H(x) = \begin{cases}
+        0, &x<0 \\
+        1, &x\geq 0
+    \end{cases} \]
+    and $t_s=0.1$ps is the duration of the initial seed pulse, and $t_r=2.627t_s$ is the rising time of the pulse. Finally, the parameter $x_0=10\mu$m controls the initial position of the waves.
+
+    In this simulation, the grid resolution is $\Delta x=0.2\mu$m, the time step is set to be $\Delta t=0.9\Delta x/v_{g,0}$. During the simulation, the boundary values are fixed to its initial value to maintain the left-going pump wave. To minimize the effect of the right boundary on the result, we set the length of the region to be $2$mm. The parameter $x_0=10\mu$m is chosen in a way such that the waves interact at a position far away from the right end of the region.
+
     \begin{figure} [H]
         \begin{subfigure}[b]{0.5\textwidth}
-            \includegraphics[width=\textwidth]{img/waves_t=0.png}
-            \caption{Before waves interact.}    
+            \includegraphics[width=\textwidth]{img/t=0.00.png}
+            \caption{Before the waves interact, the seed pulse moving to the right has amplitude 0.1. And the pump wave moving to the left has amplitude 0.05.}    
         \end{subfigure}
         \begin{subfigure}[b]{0.5\textwidth}
-            \includegraphics[width=\textwidth]{img/waves_t=1.png}
-            \caption{Energy of pump is transfer to seed.}    
+            \includegraphics[width=\textwidth]{img/t=0.60.png}
+            \caption{ After the seed pulse encounter the oppositely propagating pump wave in the plasma region, energy of pump wave is transferred to the seed wave.}    
         \end{subfigure}
     \end{figure}
 
     \section{Conclusion}
-    By sending a short laser pulse (seed) to a plasma with a counter-propagating pump laser, we observed the amplification of the short laser from numerical experiment. The energy is transferred from the pump wave to the seed wave. 
+    From the numerical experiment, we conclude that, in a cold plasma, by sending a short laser pulse (seed) to a counter-propagating pump laser, the energy of the pump wave is transferred to the seed wave under the resonance conditions Eq.(\ref{eq:resonance_conditions}). Hence, we see the increase in the energy of the seed wave and depletion of the energy in the pump wave near the position interaction. 
 
     \nocite{*}
     \bibliography{references}
